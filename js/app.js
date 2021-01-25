@@ -1,3 +1,5 @@
+//import * as d3Collection from 'd3-collection'
+
 // I. Configuracion
 
 graf = d3.select('#graf')
@@ -49,7 +51,7 @@ titulo = g.append('text')
         .attr('x', `${ancho / 2}px`)
         .attr('y', '-5px')
         .attr('text-anchor', 'middle')
-        .text('Los Edificios Más Grandes del Mundo')
+        .text('Los countrys Más Grandes del Mundo')
         .attr('class', 'titulo-grafica')
 
 
@@ -62,7 +64,7 @@ dataArray = []
 
 function render(data) {
     bars = g.selectAll('rect')
-    .data(data)
+        .data(data)
 
     bars.enter()
         .append('rect')
@@ -71,19 +73,22 @@ function render(data) {
         
         .style('y', `${y(0)}px`)
         .style('fill', '#eee')
-        .style('x', d => x(d.edificio) + 'px')
+        //.style('x', d => x(d.country) + 'px')
+        .style('x', d => x(d.key) + 'px')
         .transition()
         .duration(2000)
         
-        .style('y', d => (y(d.oficial)) + 'px')
+        //.style('y', d => (y(d.total_vaccinations)) + 'px')
+        .style('y', d => (y(d.value)) + 'px')
         .style('width', d => `${x.bandwidth()}px`)
-        .style('height', d => (alto - y(d.oficial)) + 'px')
-        .style('fill', d => color(d.region))
+        //.style('height', d => (alto - y(d.total_vaccinations)) + 'px')
+        .style('height', d => (alto - y(d.value)) + 'px')
+        .style('fill', d => color(d.continent))
 
 
         yAxisCall = d3.axisLeft(y)
                     .ticks(3)
-                    .tickFormat(d => `${d} m.`)
+                    .tickFormat(d => `${d/1000000} mill.`)
         yAxisGroup.call(yAxisCall)
 
         xAxisCall = d3.axisBottom(x)
@@ -96,34 +101,44 @@ function render(data) {
 }
 
 // IV. Carga de Datos
-// d3.csv('datos/country_vaccinations.csv').then(function(data){
-//     console.log(data)
-// })
 
-
-d3.csv('datos/edificios.csv').then(function(data){
-    console.log(data)
+d3.csv('datos/country_vaccinations.csv').then(function(data){
+    //console.log(data)
     data.forEach(d => {
-        d.oficial = +d.oficial
-        d.ano = +d.ano
-        d.antena = +d.antena
-        d.piso = +d.piso
-        d.puesto = +d.puesto
-        d.ultimopiso = +d.ultimopiso       
+        d.daily_vaccinations = +d.daily_vaccinations
+        d.daily_vaccinations_per_million = +d.daily_vaccinations_per_million
+        d.daily_vaccinations_raw = +d.daily_vaccinations_raw
+        d.people_fully_vaccinated = +d.people_fully_vaccinated
+        d.people_fully_vaccinated_per_hundred = +d.people_fully_vaccinated_per_hundred
+        d.people_vaccinated = +d.people_vaccinated
+        d.people_vaccinated_per_hundred = +d.people_vaccinated_per_hundred
+        d.total_vaccinations = +d.total_vaccinations
+        d.total_vaccinations_per_hundred = +d.total_vaccinations_per_hundred       
     })
 
-    data = data.slice(0, 15)
+    nested_data = d3.nest()
+                .key(function(d){ return d.country })
+                .rollup(function(f){ return d3.sum(f, function(v){ return v.total_vaccinations }) })
+                .entries(data)
+                .sort(function(a,b){ return d3.descending( a.value, b.value)})
+                //.map( function (group){ return  [`country: ${group.key}`, `total_vaccinations :${+group.value}`] })
+    //console.log(nested_data)
+    //data = data.slice(0, 15)
+    //nested_data = nested_data.slice(0, 15)
 
-    this.dataArray = data
+    this.dataArray = nested_data
     //Calcular la altura más alta dentro de los datos
-    maxy = d3.max(data, d => d.oficial)
+    //maxy = d3.max(data, d => d.total_vaccinations)
+    maxy = d3.max(nested_data, d => d.value)
     y.domain([0, maxy])
 
-    x.domain(data.map( d => d.edificio))
-//    console.log('Edificios')
-//    console.log(data.map( d=>d.edificio))
+    //x.domain(data.map( d => d.country))
+    x.domain(nested_data.map( d => d.key))
+    //x.domain(data.map( d => d.key))
+//    console.log('countrys')
+//    console.log(data.map( d=>d.country))
     
-    color.domain(data.map( d => d.region))
+    color.domain(data.map( d => d.continent))
 
     render(dataArray)
 
