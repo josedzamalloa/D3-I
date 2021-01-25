@@ -1,0 +1,31 @@
+h1, h2, h3, h4, h5, h6{
+    font-family: 'Lato', sans-serif;
+    font-weight: bold;
+    color: #0093c0;
+}
+body{
+    font-family: 'Roboto', sans-serif;
+}
+p{
+    text-align: justify;
+}
+
+.logo{
+    height: 100px;
+}
+
+.vizprev{
+    background-color: #eee;
+    border: 1px solid #888;
+    
+}
+
+.eje{
+    font-family: 'Roboto Condensed', sans-serif;
+    font-size: 12px;
+}
+
+.titulo-grafica{
+    font-family: 'Lato', sans-serif;
+    font-weight: bold;    
+}
