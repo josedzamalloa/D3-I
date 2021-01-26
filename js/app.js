@@ -51,7 +51,7 @@ titulo = g.append('text')
         .attr('x', `${ancho / 2}px`)
         .attr('y', '-5px')
         .attr('text-anchor', 'middle')
-        .text('Los countrys Más Grandes del Mundo')
+        .text('Adquisicion de vacunas por los páises')
         .attr('class', 'titulo-grafica')
 
 
@@ -59,12 +59,15 @@ titulo = g.append('text')
 
 dataArray = []
 
+continente = 'todas'
+continenteSelect = d3.select('#continente')
+
 
 // III. Render
 
 function render(data) {
     bars = g.selectAll('rect')
-        .data(data)
+        .data(data, d => d.country)
 
     bars.enter()
         .append('rect')
@@ -73,18 +76,26 @@ function render(data) {
         
         .style('y', `${y(0)}px`)
         .style('fill', '#eee')
-        //.style('x', d => x(d.country) + 'px')
-        .style('x', d => x(d.key) + 'px')
-        .transition()
-        .duration(2000)
         
-        //.style('y', d => (y(d.total_vaccinations)) + 'px')
-        .style('y', d => (y(d.value)) + 'px')
+        //.style('x', d => x(d.key) + 'px')
+        .merge(bars)
+        .transition()
+        .duration(2000)        
+        .style('x', d => x(d.country) + 'px')
+        .style('y', d => (y(d.total_vaccinations)) + 'px')
+        //.style('y', d => (y(d.value)) + 'px')
         .style('width', d => `${x.bandwidth()}px`)
-        //.style('height', d => (alto - y(d.total_vaccinations)) + 'px')
-        .style('height', d => (alto - y(d.value)) + 'px')
+        .style('height', d => (alto - y(d.total_vaccinations)) + 'px')
+        //.style('height', d => (alto - y(d.value)) + 'px')
         .style('fill', d => color(d.continent))
 
+    bars.exit()
+        .transition()
+        .duration(2000)
+        .style('height', '0px')
+        .style('y', d => `${y(0)}px`)
+        .style('fill', '#eee')
+        .remove()
 
         yAxisCall = d3.axisLeft(y)
                     .ticks(3)
@@ -98,6 +109,10 @@ function render(data) {
                     .attr('y', '-5px')
                     .attr('text-anchor', 'end')
                     .attr('transform', 'rotate(-90)')
+
+   
+
+
 }
 
 // IV. Carga de Datos
@@ -116,35 +131,72 @@ d3.csv('datos/country_vaccinations.csv').then(function(data){
         d.total_vaccinations_per_hundred = +d.total_vaccinations_per_hundred       
     })
 
-    nested_data = d3.nest()
+    /*nested_data = d3.nest()
                 .key(function(d){ return d.country })
+                .key(function(d){ return d.continent })
                 .rollup(function(f){ return d3.sum(f, function(v){ return v.total_vaccinations }) })
                 .entries(data)
                 .sort(function(a,b){ return d3.descending( a.value, b.value)})
                 //.map( function (group){ return  [`country: ${group.key}`, `total_vaccinations :${+group.value}`] })
-    //console.log(nested_data)
+    console.log(nested_data)
+    */
     //data = data.slice(0, 15)
     //nested_data = nested_data.slice(0, 15)
 
-    this.dataArray = nested_data
-    //Calcular la altura más alta dentro de los datos
-    //maxy = d3.max(data, d => d.total_vaccinations)
-    maxy = d3.max(nested_data, d => d.value)
-    y.domain([0, maxy])
+    dataArray = data
 
-    //x.domain(data.map( d => d.country))
-    x.domain(nested_data.map( d => d.key))
+    //x.domain(nested_data.map( d => d.key))
     //x.domain(data.map( d => d.key))
 //    console.log('countrys')
 //    console.log(data.map( d=>d.country))
     
     color.domain(data.map( d => d.continent))
 
-    render(dataArray)
+    continenteSelect.append('option')
+                        .attr('value', 'todas')
+                        .text('Todas')
+    color.domain().forEach( d => {
+            console.log(d)
+            continenteSelect.append('option')
+                        .attr('value', d)
+                        .text(d)
+    })
+
+// V. Despliegue
+
+    frame()
 
 }).catch(e => {
     console.log('No se tuvo acceso al archivo ' + e.message)
 })
 
 
-// V. Despliegue
+
+
+function frame(){
+        dataframe = dataArray
+        if(continente != 'todas'){
+                dataframe = d3.filter(dataArray, d => d.continent == continente)
+        
+        }
+
+        dataframe.sort((a, b) => {
+                return d3.descending(a.total_vaccinations, b.total_vaccinations)
+              
+        })
+
+        //Calcular la altura más alta dentro de los datos
+        maxy = d3.max(dataframe, d => d.total_vaccinations)
+        //maxy = d3.max(data, d => d.value)
+        y.domain([0, maxy])
+
+        x.domain(dataframe.map( d => d.country))
+
+        render(dataframe)
+}
+
+
+continenteSelect.on('change', ()=>{
+        continente = continenteSelect.node().value
+        frame()
+})
