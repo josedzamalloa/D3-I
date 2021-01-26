@@ -51,7 +51,7 @@ titulo = g.append('text')
         .attr('x', `${ancho / 2}px`)
         .attr('y', '-5px')
         .attr('text-anchor', 'middle')
-        .text('Adquisicion de vacunas por los páises')
+        .text('ADQUISICIÓN DE VACUNAS POR PAÍS')
         .attr('class', 'titulo-grafica')
 
 
