@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trabajo: Gráficos con D3 (II)- José Daniel Zamalloa Núñez</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css"
+        integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
+    <!-- Estilos propios -->
+    <link rel="stylesheet" href="css/style.css">
+    <!-- Fuentes Google -->
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Lato:wght@700&family=Roboto&family=Roboto+Condensed&display=swap"
+        rel="stylesheet">
+</head>
+
+<body>
+    <nav class="d-flex justify-content-between navbar navbar-light bg-light shadow">
+        <a href="/">
+            <img src="https://www.unir.net/wp-content/uploads/2020/03/logo-horizontal.png" alt="" class="logo">
+        </a>
+        <h4>Herramientas de Visualización</h4>
+        <h5>Jose Daniel Zamalloa Núñez</h5>
+    </nav>
+
+    <div class="container mt-4">
+        <div class="row mb-4 align-items-center">
+
+            <!-- botones -->
+            <div class="col-md-3">
+                <button class="btn btn-outline-secondary" onclick="delta(-5)">
+                    <i class="fas fa-fast-backward"></i>
+                </button>
+                <button class="btn btn-outline-dark" onclick="delta(-1)">
+                    <i class="fas fa-step-backward"></i>
+                </button>
+                <button class="btn btn-outline-danger" id="pausa">
+                    <i class="fas fa-pause-circle"></i>
+                </button>
+                <button class="btn btn-outline-dark" onclick="delta(1)">
+                    <i class="fas fa-step-forward"></i>
+                </button>
+                <button class="btn btn-outline-secondary" onclick="delta(5)">
+                    <i class="fas fa-fast-forward"></i>
+                </button>
+            </div>
+            <!-- /botones -->
+
+            <!-- slider -->
+            <div class="col-md-6 align-self-center">
+                <input type="range" min="0" max="100" value="80" class="slider" id="slider">
+                <br><span class="badge badge-success p-2" id="slider"></span>
+            </div>
+            <!-- /slider -->
+
+            <!-- continente -->
+            <div class="col-md-3 text-center">
+                Seleccionar Continente:
+                <select id="continente" class="form-control"></select>
+            </div>
+            <!-- /continente -->
+
+        </div>
+        <div class="row">
+            
+            <div class="col-md-12">
+                <div id="slider"></div>
+                <div id="graf" class="vizprev">
+
+                </div>
+
+            </div>
+            <div class="col-md-12 mt-4">
+                <h4 class="text-center">Vacunas contra el coronavirus</h4>
+                <p>
+                    En el 2020, el mundo fue afectado por una nueva pandemia causada por el virus SARS-COV-2 ocasionando
+                    más de 2,140,000 decesos en el planeta (Wikipedia, 2021); el primer caso registrado fue en China. El
+                    coronavirus, o COVID-19, actúa de manera diferente en cada persona; los sujetos que presentan
+                    síntomas con intensidad leve o moderada, por lo general, se recuperan sin ningún tratamiento
+                    especial u hospitalización. Sin embargo, los sujetos que presentan síntomas graves tienen una tasa
+                    de mortalidad alta.
+                </p>
+                <p>
+                    El 2020 no sólo fue una carrera para contener la expansión de la enfermedad, sino que también fue
+                    una lucha contra el tiempo para desarrollar la vacuna por diversos laboratorios que podría decirse
+                    fue en tiempo récord. La siguiente visualización muestra la cantidad de vacunas adquiridas por los
+                    países hasta el día 08 de febrero del 2021.
+                </p>
+                <p>
+                    Como se aprecia en la gráfica, el país con mayor adquisición de vacunas es Estados Unidos, seguido
+                    por China con más de 20 y 15 millones de vacunas respectivamente. Estos países duplican y hasta
+                    triplican al tercer lugar que vendría a ser el Reino Unido y el resto está conformado en su mayoría
+                    por países de Europa.
+                </p>
+                <p>
+                    La visualización nos permite filtrar también por continente, donde en Latinoamérica solo hay 4
+                    países que ya están empezando a adquirir sus vacunas, siendo el número uno Brasil con algo de medio
+                    millón de vacunas, seguido por argentina, chile y Ecuador, los demás países aún no figuran entre los
+                    datos.
+                </p>
+                <p>
+                    Por parte de Norteamérica, el número uno es Estados Unidos, seguido de lejos por Canadá, México,
+                    Costa Rica y Panamá, estos dos últimos apenas aparecen. Del lado europeo hay una mayor cantidad de
+                    países, que la adquisición de vacunas se irá incrementando en los próximos días y semanas. Entre los
+                    países asiáticos, el que más destaca es China, seguido por Israel, Emiratos Árabes, India y Turquía,
+                    entre otros. Para finalizar, en el continente africano, solo un país comenzó con la adquisición de
+                    las vacunas: Seychelles.
+                </p>
+                <p>
+                    El por qué algunos países ya tienen acceso a las vacunas más antes que otros dependen de muchos
+                    factores, entre ellos, destaca su gestión con los diversos laboratorios, problemáticas de país,
+                    problemas económicos y a esto se suma la capacidad de elaboración por parte de los laboratorios.
+                    Personalmente, me causa preocupación no ver a mi país figurar entre esta lista, donde la cantidad de
+                    fallecimientos se va incrementando y la gente ya bajo la guardia ante esta terrible enfermedad. Solo
+                    nos queda tener paciencia.
+                </p>
+            </div>
+        </div>
+
+
+
+        <!-- Bootstrap JS -->
+        <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+            integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+            crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx"
+            crossorigin="anonymous"></script>
+        <!--  D3 -->
+        <script src="js/d3.js"></script>
+        <script src="https://d3js.org/d3-collection.v1.min.js"></script>
+        <script src="js/app2.js"></script>
+        <script src="js/moment.js"></script>
+        <script src="https://kit.fontawesome.com/f0abc9c17c.js" crossorigin="anonymous"></script>
+</body>
+
+</html>
