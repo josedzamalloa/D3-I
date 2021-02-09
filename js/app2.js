@@ -10,16 +10,20 @@ graf.style('width', `${ancho_total}px`)
         .style('height', `${alto_total}px`)
 
 
+
 margins = { top: 30, left: 50, right: 15, bottom: 140 }
 
 ancho = ancho_total - margins.left - margins.right
 alto = alto_total - margins.top - margins.bottom
 
+var tooltip = d3.select("#graf").append("div").attr("class", "toolTip")
 
 // II. Variables globales
 svg = graf.append('svg')
         .style('width', `${ancho_total}px`)
         .style('height', `${alto_total}px`)
+
+
 
 g = svg.append('g')
         .attr('transform', `translate(${margins.left}, ${margins.top})`)
@@ -30,7 +34,7 @@ g = svg.append('g')
 fontsize = alto * 0.25
 dateDisplay = g.append('text')
         .attr('x', ancho / 2)
-        .attr('y', alto / 2 - fontsize )
+        .attr('y', alto / 2 - fontsize)
         .attr('text-anchor', 'middle')
         .attr('font-family', 'Roboto')
         .attr('font-size', `${fontsize}px`)
@@ -57,6 +61,7 @@ color = d3.scaleOrdinal()
 xAxisGroup = g.append('g')
         .attr('transform', `translate(0, ${alto})`)
         .attr('class', 'eje')
+
 yAxisGroup = g.append('g')
         .attr('class', 'eje')
 
@@ -64,7 +69,7 @@ titulo = g.append('text')
         .attr('x', `${ancho / 2}px`)
         .attr('y', '-5px')
         .attr('text-anchor', 'middle')
-        .text('ADQUISICIÓN DE VACUNAS POR PAÍS')
+        .text('TOTAL DE VACUNACIONES DIARIAS POR PAÍS')
         .attr('class', 'titulo-grafica')
 
 
@@ -74,21 +79,15 @@ titulo = g.append('text')
 dataArray = []
 fechas = []
 ifecha = 0
-corriendo  = true
+corriendo = true
 var interval
-
-//minDateUnix = moment('2020-12-13', "YYYY MM DD").unix();
-//maxDateUnix = moment('2021-02-06', "YYYY MM DD").unix();
-//var secondsInDay = 60 * 60 * 24;
-
-
 
 
 
 continente = 'todas'
 continenteSelect = d3.select('#continente')
 botonPausa = d3.select('#pausa')
-slider     = d3.select('#slider');
+slider = d3.select('#slider');
 
 // III. Render
 
@@ -106,6 +105,15 @@ function render(data) {
 
                 .style('y', `${y(0)}px`)
                 .style('fill', '#eee')
+                /*.on('mousemove', () => {
+                        tooltip
+                                .style("left", 70 + 'px')
+                                .style("top", 50 + 'px')
+                                .style("display", "inline-block")
+                                .html(d=>d.country)
+
+                })
+                .on("mouseout", function (d) { tooltip.style("display", "none") })*/
 
                 //.style('x', d => x(d.key) + 'px')
                 .merge(bars)
@@ -118,6 +126,7 @@ function render(data) {
                 .style('height', d => (alto - y(d.total_vaccinations)) + 'px')
                 //.style('height', d => (alto - y(d.value)) + 'px')
                 .style('fill', d => color(d.continent))
+
 
         bars.exit()
                 .transition()
@@ -239,6 +248,7 @@ function frame() {
 
         //Calcular la altura más alta dentro de los datos
         maxy = d3.max(dataframe, d => d.total_vaccinations)
+        if (maxy == 0) maxy = 100000
         //maxy = d3.max(data, d => d.value)
         y.domain([0, maxy])
 
@@ -247,7 +257,7 @@ function frame() {
         slider.node().value = ifecha
 
         render(dataframe)
-        
+
 }
 
 function delta(d) {
@@ -267,30 +277,30 @@ continenteSelect.on('change', () => {
 botonPausa.on('click', () => {
         corriendo = !corriendo
         if (corriendo) {
-          botonPausa
-            .classed('btn-danger', true)
-            .classed('btn-success', false)
-            .html('<i class="fas fa-pause-circle"></i>')
-            interval = d3.interval(() => delta(1), 2500)
+                botonPausa
+                        .classed('btn-danger', true)
+                        .classed('btn-success', false)
+                        .html('<i class="fas fa-pause-circle"></i>')
+                interval = d3.interval(() => delta(1), 2500)
         } else {
-          botonPausa
-            .classed('btn-danger', false)
-            .classed('btn-success', true)
-            .html('<i class="fas fa-play-circle"></i>')
-          interval.stop()
+                botonPausa
+                        .classed('btn-danger', false)
+                        .classed('btn-success', true)
+                        .html('<i class="fas fa-play-circle"></i>')
+                interval.stop()
         }
-      })
-      
-      slider.on('input', () => {
+})
+
+slider.on('input', () => {
         // d3.select('#sliderv').text(slider.node().value)
         ifecha = +slider.node().value
         frame()
-      })
-      
-      slider.on('mousedown', () => {
+})
+
+slider.on('mousedown', () => {
         if (corriendo) interval.stop()
-      })
-      
-      slider.on('mouseup', () => {
+})
+
+slider.on('mouseup', () => {
         if (corriendo) interval = d3.interval(() => delta(1), 2500)
-      })
+})
