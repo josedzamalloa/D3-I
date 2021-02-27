@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trabajo: Gráficos con D3 (II)- José Daniel Zamalloa Núñez</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css"
+        integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
+    <!-- Estilos propios -->
+    <link rel="stylesheet" href="css/style.css">
+    <!-- Fuentes Google -->
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Lato:wght@700&family=Roboto&family=Roboto+Condensed&display=swap"
+        rel="stylesheet">
+</head>
+
+<body>
+    <nav class="d-flex justify-content-between navbar navbar-light bg-light shadow">
+        <a href="/">
+            <img src="https://www.unir.net/wp-content/uploads/2020/03/logo-horizontal.png" alt="" class="logo">
+        </a>
+        <h4>Herramientas de Visualización</h4>
+        <h5>Jose Daniel Zamalloa Núñez</h5>
+    </nav>
+
+    <div class="container mt-4">
+        <div class="row mb-4 align-items-center">
+
+            <!-- botones -->
+            <div class="col-md-3">
+                <button class="btn btn-outline-secondary" onclick="delta(-5)">
+                    <i class="fas fa-fast-backward"></i>
+                </button>
+                <button class="btn btn-outline-dark" onclick="delta(-1)">
+                    <i class="fas fa-step-backward"></i>
+                </button>
+                <button class="btn btn-outline-danger" id="pausa">
+                    <i class="fas fa-pause-circle"></i>
+                </button>
+                <button class="btn btn-outline-dark" onclick="delta(1)">
+                    <i class="fas fa-step-forward"></i>
+                </button>
+                <button class="btn btn-outline-secondary" onclick="delta(5)">
+                    <i class="fas fa-fast-forward"></i>
+                </button>
+            </div>
+            <!-- /botones -->
+
+            <!-- slider -->
+            <div class="col-md-6 align-self-center">
+                <input type="range" min="0" max="100" value="80" class="slider" id="slider">
+                <br><span class="badge badge-success p-2" id="slider"></span>
+            </div>
+            <!-- /slider -->
+
+            <!-- continente -->
+            <div class="col-md-3 text-center">
+                Seleccionar Continente:
+                <select id="continente" class="form-control"></select>
+            </div>
+            <!-- /continente -->
+
+        </div>
+        <div class="row">
+            
+            <div class="col-md-12">
+                <div id="graf" class="vizprev">
+
+                </div>
+
+            </div>
+            <div class="col-md-12 mt-4">
+                <h4 class="text-center">Personas vacunadas diariamente contra el coronavirus</h4>
+                <p>
+                    En el 2020, el mundo fue afectado por una nueva pandemia causada por el virus SARS-COV-2 ocasionando a la fecha más de 2.32 millones de muertes en el planeta (Wikipedia, 2021); el primer caso registrado fue en China. El coronavirus, o COVID-19, actúa de manera diferente en cada persona; los sujetos que presentan síntomas con intensidad leve o moderada, por lo general, se recuperan sin ningún tratamiento especial u hospitalización. Sin embargo, los sujetos que presentan síntomas graves tienen una tasa de mortalidad alta.
+                </p>
+                <p>
+                    En la actualidad, varios laboratorios y consorcios farmacéuticos vienen entregando las vacunas, que se espera puedan salvar miles de vidas; después de la adquisición y elección del orden de prelación para la vacunación, los gobiernos vienen inmunizando a sus servidores públicos y ciudadanos. La siguiente visualización muestra la cantidad de personas vacunadas diariamente por cada país con datos actualizados hasta el 06 de febrero del 2021.
+                </p>
+                <p>
+                    Como se aprecia en la gráfica se tiene registrada la cantidad de personas vacunadas desde el 13 de diciembre del 2020, este primer día cinco (05) países iniciación sus campañas de vacunación masiva contra el coronavirus, siendo el que más destaca el Reino Unido con la aplicación de más de 80,000 dosis para los más vulnerables, previendo que el total de su población adulta se encuentre inmunizada para otoño del 2021. El ministro de las vacunas, Nadhim Zahawi, aseguró que a la fecha ya se ha vacunado el 80 por ciento de esa población vulnerable; y la meta del Gobierno es inmunizar al resto para mitad de febrero (Pulido, 2021).
+                </p>
+                <p>
+                    El por qué Gran Bretaña es uno de los países que muestra mayor celeridad en la vacunación es por su sistema de salud eficiente, demostrando una planeación y compra de las vacunas cuando aún estaba en proceso de desarrollo.
+                </p>
+                <p>
+                    Dos días después (15 de diciembre del 2020), se reporta que China aplicó alrededor de 1.5 millones de vacunas producido por Sinopharm junto al Instituto de Productos Biológicos de Pekín, la misma que tiene una eficacia del 79%, a través de una aprobación de comercialización condicional que permite ofrecerla al público cuando aún no se han concluido los ensayos clínicos, pero indican que el producto es eficaz. En cuanto a reacciones adversas solo se constataron algunas reacciones alérgicas sin gravedad (Pekín, 2021).
+                </p>
+                <p>
+                    En cuanto a Estados Unidos, se tiene datos de que comenzó su campaña de vacunación el 20 de diciembre del 2020. Siendo el presidente electo, Joe Biden, vacunado frente a las cámaras de televisión recibiendo la primera dosis de la vacuna Pfizer/BioNTech (Swissinfo, 2020). Como se sabe Estados Unidos es el país más enlutado del mundo con más de 318,000 muertes.
+                </p>
+                <p>
+                    Respecto a mi país, aún no figura en el dataset porque recién ayer, 07 de febrero del 2021, llegaron las primeras 300 mil dosis iniciando su distribución el día de hoy; en primer lugar, para el personal de salud, a fin de proteger las áreas críticas que vienen combatiendo la pandemia (Redacción Gestión, 2021). Las 700 mil primeras dosis que restan partirán de China el 13 de febrero llegando al día siguiente para cumplir con el orden de vacunación decretado por el gobierno peruano.
+                </p>
+            </div>
+        </div>
+
+
+
+        <!-- Bootstrap JS -->
+        <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+            integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+            crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx"
+            crossorigin="anonymous"></script>
+        <!--  D3 -->
+        <script src="js/d3.js"></script>
+        <script src="https://d3js.org/d3-collection.v1.min.js"></script>
+        <script src="js/app3.js"></script>
+        <script src="js/moment.js"></script>
+        <script src="https://kit.fontawesome.com/f0abc9c17c.js" crossorigin="anonymous"></script>
+</body>
+
+</html>

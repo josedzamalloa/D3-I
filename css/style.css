@@ -49,3 +49,29 @@ p {
     padding: 14px;
     text-align: center;
 }
+.half-post-entry{
+    min-height: 300px;
+}
+
+.half-post-entry .img-bg {
+	background-size: cover;
+	background-position: top center;
+	background-repeat: no-repeat;
+    height: auto;
+}
+.half-post-entry .img-bg, .half-post-entry .contents {
+	width: 50%;
+}
+.contents{
+    padding: 10px 10px 10px 10px;
+}
+.half-post-entry p{
+    color: gray;
+}
+
+.post-meta {
+	font-size: .8rem;
+}
+.date-read {
+	color: #b4b4b4;
+}
