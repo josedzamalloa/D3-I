@@ -42,6 +42,14 @@ g = svg.append('g')
 x = d3.scaleTime().range([0, ancho])
 y = d3.scaleLinear().range([alto, 0])
 
+xAxisGroup = g.append('g')
+        .attr('transform', `translate(0, ${alto})`)
+        .attr('class', 'eje')
+
+yAxisGroup = g.append('g')
+        .attr('class', 'eje')
+
+
 // Funcion para dibujar linea
 var valueline = d3.line()
         .x(function (d) { return x(d.date); })
@@ -50,6 +58,25 @@ var valueline = d3.line()
 function render(datos) {
         lines = g.selectAll("lines")
                 .data([datos])
+
+        x.domain(d3.extent(datos, function (d) { return d.date }))
+        y.domain([0, d3.max(datos, function (d) {
+                //return Math.max(d.total_vaccinations)
+                return d.total_vaccinations
+        })])
+
+        xAxisCall = d3.axisBottom(x)
+        xAxisGroup.call(xAxisCall)
+
+        yAxisCall = d3.axisLeft(y)
+        
+        yAxisGroup.call(yAxisCall)
+                .append("text")
+                .attr("transform", "rotate(-90)")
+                .attr("dy", ".75em")
+                .attr("y", 6)
+                .style("text-anchor", "end")
+                .text("Vacunas");
 
         dataNest = Array.from(
                 d3.group(datos, d => d.country), ([key, value]) => ({ key, value })
@@ -83,7 +110,7 @@ function render(datos) {
                         .attr("d", valueline(d.value))
                         .style("mix-blend-mode", "multiply")
 
-                        
+
 
                 //console.log(d.value)
 
@@ -138,29 +165,29 @@ d3.csv("datos/country_vaccinations3.csv").then(function (data) {
         })
         //console.log(data)
 
-        x.domain(d3.extent(data, function (d) { return d.date }))
-        y.domain([0, d3.max(data, function (d) {
-                //return Math.max(d.total_vaccinations)
-                return d.total_vaccinations
-        })])
+        //x.domain(d3.extent(data, function (d) { return d.date }))
+        // y.domain([0, d3.max(data, function (d) {
+        //         //return Math.max(d.total_vaccinations)
+        //         return d.total_vaccinations
+        // })])
 
 
 
-        g.append("g")
-                .attr("class", "axis")
-                .attr('transform', `translate(0, ${alto})`)
-                .call(d3.axisBottom(x))
+        // g.append("g")
+        //         .attr("class", "axis")
+        //         .attr('transform', `translate(0, ${alto})`)
+        //         .call(d3.axisBottom(x))
 
-        // Add the Y Axis
-        g.append("g")
-                .attr("class", "axis")
-                .call(d3.axisLeft(y))
-                .append("text")
-                .attr("transform", "rotate(-90)")
-                .attr("dy", ".75em")
-                .attr("y", 6)
-                .style("text-anchor", "end")
-                .text("Vacunas");
+        // // Add the Y Axis
+        // g.append("g")
+        //         .attr("class", "axis")
+        //         .call(d3.axisLeft(y))
+        //         .append("text")
+        //         .attr("transform", "rotate(-90)")
+        //         .attr("dy", ".75em")
+        //         .attr("y", 6)
+        //         .style("text-anchor", "end")
+        //         .text("Vacunas");
 
 
 
@@ -185,11 +212,7 @@ d3.csv("datos/country_vaccinations3.csv").then(function (data) {
         //         .attr("class", "line")
         //         .attr("d", valueline)
 
-
-
         dataArray = data
-
-
 
         color.domain(data.map(d => d.continent))
 
@@ -249,48 +272,48 @@ continenteSelect.on('change', () => {
 // }
 
 function hover(svg, path) {
-  
+
         if ("ontouchstart" in document) svg
-            .style("-webkit-tap-highlight-color", "transparent")
-            .on("touchmove", moved)
-            .on("touchstart", entered)
-            .on("touchend", left)
+                .style("-webkit-tap-highlight-color", "transparent")
+                .on("touchmove", moved)
+                .on("touchstart", entered)
+                .on("touchend", left)
         else svg
-            .on("mousemove", moved)
-            .on("mouseenter", entered)
-            .on("mouseleave", left);
-      
+                .on("mousemove", moved)
+                .on("mouseenter", entered)
+                .on("mouseleave", left);
+
         const dot = svg.append("g")
-            .attr("display", "none");
-      
+                .attr("display", "none");
+
         dot.append("circle")
-            .attr("r", 2.5);
-      
+                .attr("r", 2.5);
+
         dot.append("text")
-            .attr("font-family", "sans-serif")
-            .attr("font-size", 10)
-            .attr("text-anchor", "middle")
-            .attr("y", -8);
-      
+                .attr("font-family", "sans-serif")
+                .attr("font-size", 10)
+                .attr("text-anchor", "middle")
+                .attr("y", -8);
+
         function moved(event) {
-          event.preventDefault();
-          const pointer = d3.pointer(event, this);
-          const xm = x.invert(pointer[0]);
-          const ym = y.invert(pointer[1]);
-          const i = d3.bisectCenter(data.dates, xm);
-          const s = d3.least(data.series, d => Math.abs(d.values[i] - ym));
-          path.attr("stroke", d => d === s ? null : "#ddd").filter(d => d === s).raise();
-          dot.attr("transform", `translate(${x(data.dates[i])},${y(s.values[i])})`);
-          dot.select("text").text(s.name);
+                event.preventDefault();
+                const pointer = d3.pointer(event, this);
+                const xm = x.invert(pointer[0]);
+                const ym = y.invert(pointer[1]);
+                const i = d3.bisectCenter(data.dates, xm);
+                const s = d3.least(data.series, d => Math.abs(d.values[i] - ym));
+                path.attr("stroke", d => d === s ? null : "#ddd").filter(d => d === s).raise();
+                dot.attr("transform", `translate(${x(data.dates[i])},${y(s.values[i])})`);
+                dot.select("text").text(s.name);
         }
-      
+
         function entered() {
-          path.style("mix-blend-mode", null).attr("stroke", "#ddd");
-          dot.attr("display", null);
+                path.style("mix-blend-mode", null).attr("stroke", "#ddd");
+                dot.attr("display", null);
         }
-      
+
         function left() {
-          path.style("mix-blend-mode", "multiply").attr("stroke", null);
-          dot.attr("display", "none");
+                path.style("mix-blend-mode", "multiply").attr("stroke", null);
+                dot.attr("display", "none");
         }
-      }
+}
